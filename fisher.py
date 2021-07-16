@@ -146,7 +146,7 @@ class FisherCalculator:
                 matrix[j][1,1]+= noiseEEE[j]
                 matrix[j][2,2]+= noiseEEE[j]
         
-        cl_dict_values = {"H0_value": 67.5, "ombh2_value": 0.022  ,"omch2_value": 0.122, "As_value":2.10058296e-9, "ns_value":0.96605, "tau_value":0.06, "Gmu_value":1*10**(-7)} 
+        cl_dict_values = {"H0_value": 67.5, "ombh2_value": 0.022  ,"omch2_value": 0.122, "As_value":2.10058296e-9, "ns_value":0.96605, "tau_value":0.06, "Gmu_value":self.Gmu} 
         variables = ["H0_value","ombh2_value","omch2_value","As_value","ns_value","tau_value","Gmu_value", "fiducial_value"]
         self.f_matrix1 = np.zeros((7,7))
         fsky1 = fsky_coefficient*fsky
