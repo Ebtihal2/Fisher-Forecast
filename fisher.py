@@ -74,7 +74,7 @@ class FisherCalculator:
                 SigmaStr_tt2 += ((2*i+1)/(4*np.pi))* ( (self.yt[i]+ self.zt[i]+self.tt[i])*((2*np.pi))/(i*(i+1)))
             A = (self.Gmu)**2 * SigmaTot_tt2 *(1.27*10**(-6))**(-2) *(SigmaStr_tt2)**(-1)
     #Calculating Cl_matrices for varied cosmological parameters and multipole values
-            for i in self.ls[ (self.ls < len(cl_t))& (self.ls <len(self.yt))]:
+            for i in self.ls[ (self.ls < len(cl_t))& (self.ls <len(self.yt)) & (self.ls > 2)]:
                 Cl_11 = A*(self.yt[i]+ self.zt[i]+self.tt[i])*(2*np.pi)/(i*(i+1)) + ((cl_t[i]*(2*np.pi))/(i*(i+1)))
                 Cl_12 = A*(self.yte[i]+ self.zte[i]+self.te[i])*(2*np.pi)/(i*(i+1))+((cl_te[i]*(2*np.pi))/(i*(i+1)))
                 Cl_22 = A*(self.ye[i]+ self.ze[i]+self.te[i])*(2*np.pi)/(i*(i+1)) + ((cl_e[i]*(2*np.pi))/(i*(i+1)))
@@ -107,7 +107,7 @@ class FisherCalculator:
             SigmaTot_tt2 += ((2*i+1)/(4*np.pi))* ((cl_t[i] *(2*np.pi))/(i*(i+1)))
             SigmaStr_tt2 += ((2*i+1)/(4*np.pi))* ( (self.yt[i]+ self.zt[i]+self.tt[i])*((2*np.pi))/(i*(i+1)))
         A = (self.Gmu*1.01)**2 * SigmaTot_tt2 *(1.27*10**(-6))**(-2) *(SigmaStr_tt2)**(-1)
-        for i in self.ls[ (self.ls < len(cl_t))& (self.ls <len(self.yt))]:
+        for i in self.ls[ (self.ls < len(cl_t))& (self.ls <len(self.yt)) &  (self.ls > 2)]:
             Cl_11 = A*(self.yt[i]+ self.zt[i]+self.tt[i])*(2*np.pi)/(i*(i+1)) + ((cl_t[i]*(2*np.pi))/(i*(i+1)))
             Cl_12 = A*(self.yte[i]+ self.zte[i]+self.te[i])*(2*np.pi)/(i*(i+1))+((cl_te[i]*(2*np.pi))/(i*(i+1)))
             Cl_22 = A*(self.ye[i]+ self.ze[i]+self.te[i])*(2*np.pi)/(i*(i+1)) + ((cl_e[i]*(2*np.pi))/(i*(i+1)))
