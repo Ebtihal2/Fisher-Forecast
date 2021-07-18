@@ -119,7 +119,7 @@ class FisherCalculator:
 
         
     
-    def Fisher_matrix(self, noise_coefficient, noiseTT, noiseEE, noiseBB fsky,fsky_coefficient):
+    def Fisher_matrix(self, noise_coefficient, noiseTT, noiseEE, noiseBB, fsky,fsky_coefficient):
         '''
            The function addes noise to each CL_matrix for each variable. 
            Calculates the fisher matrix and the uncertainties on each parameter. 
