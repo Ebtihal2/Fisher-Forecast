@@ -19,25 +19,25 @@ dd = d.item()
 
 
 class FisherCalculator:
-    def __init__(self, Gmu, CLTT_String_File, CLTE_String_File,CLBB_String_File,CLEE_String_File ):
+    def __init__(self, Gmu, DLTT_String_File, DLTE_String_File,DLBB_String_File,DLEE_String_File ):
         '''
         Constructor. This function calculates the cl_matrices for fiducial values and for each varied cosmological parameter
         excluding Gmu. 
         
         Parameters: 
         Gmu(int): the value of Gmu assumed. 
-        CLTT_String_File(file): TT string power spectrum with some nexp value.
-        CLTE_String_File(file): TE string power spectrum with some nexp value.
-        CLBB_String_File(file): BB string power spectrum with some nexp value.
-        CLEE_String_File(file): EE string power spectrum with some nexp value.
+        DLTT_String_File(file): TT string power spectrum with some nexp value.
+        DLTE_String_File(file): TE string power spectrum with some nexp value.
+        DLBB_String_File(file): BB string power spectrum with some nexp value.
+        DLEE_String_File(file): EE string power spectrum with some nexp value.
          
         
         '''
         #String Data
-        self.l, self.yt, self.zt, self.tt = np.loadtxt(CLTT_String_File, unpack = True)
-        self.l, self.yte, self.zte, self.tte = np.loadtxt(CLTE_String_File, unpack = True)
-        self.l, self.yb, self.zb = np.loadtxt(CLBB_String_File, unpack = True)
-        self.l, self.ye, self.ze, self.te = np.loadtxt(CLEE_String_File, unpack = True)
+        self.l, self.yt, self.zt, self.tt = np.loadtxt(DLTT_String_File, unpack = True)
+        self.l, self.yte, self.zte, self.tte = np.loadtxt(DLTE_String_File, unpack = True)
+        self.l, self.yb, self.zb = np.loadtxt(DLBB_String_File, unpack = True)
+        self.l, self.ye, self.ze, self.te = np.loadtxt(DLEE_String_File, unpack = True)
 
 
         #Set up a new set of parameters for CAMB
@@ -61,23 +61,23 @@ class FisherCalculator:
             powers = results.get_cmb_power_spectra(cp, CMB_unit='muK')
             totCL=powers['total']
             self.ls = np.arange(totCL.shape[0])
-            cl_t = totCL[:,0]
-            cl_e =totCL[:,1]
-            cl_b = totCL[:,2]
-            cl_te = totCL[:,3]
+            dl_t = totCL[:,0]
+            dl_e =totCL[:,1]
+            dl_b = totCL[:,2]
+            dl_te = totCL[:,3]
       #Calculating A in terms of Gmu
             SigmaTot_tt2 = 0
             SigmaStr_tt2 = 0            
             for i in range(2,len(self.yt)):
-                SigmaTot_tt2 += ((2*i+1)/(4*np.pi))* ((cl_t[i] *(2*np.pi))/(i*(i+1)))
+                SigmaTot_tt2 += ((2*i+1)/(4*np.pi))* ((dl_t[i] *(2*np.pi))/(i*(i+1)))
                 SigmaStr_tt2 += ((2*i+1)/(4*np.pi))* ( (self.yt[i]+ self.zt[i]+self.tt[i])*((2*np.pi))/(i*(i+1)))
             A = (self.Gmu)**2 * SigmaTot_tt2 *(1.27*10**(-6))**(-2) *(SigmaStr_tt2)**(-1)
        #Calculating Cl_matrices for varied cosmological parameters and multipole values
             for i in self.ls[ (self.ls < len(cl_t))& (self.ls <len(self.yt))& (self.ls > 1)]:
-                Cl_11 = A*(self.yt[i]+ self.zt[i]+self.tt[i])*(2*np.pi)/(i*(i+1)) + ((cl_t[i]*(2*np.pi))/(i*(i+1)))
-                Cl_12 = A*(self.yte[i]+ self.zte[i]+self.te[i])*(2*np.pi)/(i*(i+1))+((cl_te[i]*(2*np.pi))/(i*(i+1)))
-                Cl_22 = A*(self.ye[i]+ self.ze[i]+self.te[i])*(2*np.pi)/(i*(i+1)) + ((cl_e[i]*(2*np.pi))/(i*(i+1)))
-                Cl_33 = ((cl_b[i]*(2*np.pi))/(i*(i+1))) + A*(self.yb[i]+ self.zb[i])*(2*np.pi)/(i*(i+1))
+                Cl_11 = A*(self.yt[i]+ self.zt[i]+self.tt[i])*(2*np.pi)/(i*(i+1)) + ((dl_t[i]*(2*np.pi))/(i*(i+1)))
+                Cl_12 = A*(self.yte[i]+ self.zte[i]+self.te[i])*(2*np.pi)/(i*(i+1))+((dl_te[i]*(2*np.pi))/(i*(i+1)))
+                Cl_22 = A*(self.ye[i]+ self.ze[i]+self.te[i])*(2*np.pi)/(i*(i+1)) + ((dl_e[i]*(2*np.pi))/(i*(i+1)))
+                Cl_33 = ((dl_b[i]*(2*np.pi))/(i*(i+1))) + A*(self.yb[i]+ self.zb[i])*(2*np.pi)/(i*(i+1))
                 c_l   = np.matrix([[Cl_11,  Cl_12, 0],[ Cl_12, Cl_22, 0], [0,0,Cl_33 ]])
                 cl_matrix.insert(len(cl_matrix)-1,c_l)
             self.Parameters_CLmatrix[key_list[val_list.index(dictionary)]] = cl_matrix
@@ -95,21 +95,21 @@ class FisherCalculator:
         powers = results.get_cmb_power_spectra(cp, CMB_unit='muK')
         totCL=powers['total']
         self.ls = np.arange(totCL.shape[0])
-        cl_t = totCL[:,0]
-        cl_e =totCL[:,1]
-        cl_b = totCL[:,2]
-        cl_te = totCL[:,3]
+        dl_t = totCL[:,0]
+        dl_e =totCL[:,1]
+        dl_b = totCL[:,2]
+        dl_te = totCL[:,3]
         SigmaTot_tt2 = 0
         SigmaStr_tt2 = 0 
         for i in range(2,len(self.yt)):
-            SigmaTot_tt2 += ((2*i+1)/(4*np.pi))* ((cl_t[i] *(2*np.pi))/(i*(i+1)))
+            SigmaTot_tt2 += ((2*i+1)/(4*np.pi))* ((dl_t[i] *(2*np.pi))/(i*(i+1)))
             SigmaStr_tt2 += ((2*i+1)/(4*np.pi))* ( (self.yt[i]+ self.zt[i]+self.tt[i])*((2*np.pi))/(i*(i+1)))
         A = (self.Gmu*1.01)**2 * SigmaTot_tt2 *(1.27*10**(-6))**(-2) *(SigmaStr_tt2)**(-1)
         for i in self.ls[ (self.ls < len(cl_t))& (self.ls <len(self.yt))& (self.ls > 1)]:
-            Cl_11 = A*(self.yt[i]+ self.zt[i]+self.tt[i])*(2*np.pi)/(i*(i+1)) + ((cl_t[i]*(2*np.pi))/(i*(i+1)))
-            Cl_12 = A*(self.yte[i]+ self.zte[i]+self.te[i])*(2*np.pi)/(i*(i+1))+((cl_te[i]*(2*np.pi))/(i*(i+1)))
-            Cl_22 = A*(self.ye[i]+ self.ze[i]+self.te[i])*(2*np.pi)/(i*(i+1)) + ((cl_e[i]*(2*np.pi))/(i*(i+1)))
-            Cl_33 = ((cl_b[i]*(2*np.pi))/(i*(i+1))) + A*(self.yb[i]+ self.zb[i])*(2*np.pi)/(i*(i+1))
+            Cl_11 = A*(self.yt[i]+ self.zt[i]+self.tt[i])*(2*np.pi)/(i*(i+1)) + ((dl_t[i]*(2*np.pi))/(i*(i+1)))
+            Cl_12 = A*(self.yte[i]+ self.zte[i]+self.te[i])*(2*np.pi)/(i*(i+1))+((dl_te[i]*(2*np.pi))/(i*(i+1)))
+            Cl_22 = A*(self.ye[i]+ self.ze[i]+self.te[i])*(2*np.pi)/(i*(i+1)) + ((dl_e[i]*(2*np.pi))/(i*(i+1)))
+            Cl_33 = ((dl_b[i]*(2*np.pi))/(i*(i+1))) + A*(self.yb[i]+ self.zb[i])*(2*np.pi)/(i*(i+1))
             c_l   = np.matrix([[Cl_11,  Cl_12, 0],[ Cl_12, Cl_22, 0], [0,0,Cl_33 ]])
             cl_matrix.insert(len(cl_matrix)-1,c_l)
         self.Parameters_CLmatrix["Gmu_value"] = cl_matrix
