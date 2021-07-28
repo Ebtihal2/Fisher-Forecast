@@ -24,8 +24,8 @@ dd = d.item()
 # In[2]:
 
 
-#def __init__(self, Gmu, CLTT_String_File, CLTE_String_File,CLBB_String_File,CLEE_String_File )
-fisher12= fisher.FisherCalculator(1*10**(-9),'cl_tt120.d','cl_te120.d','cl_bb120.d','cl_ee120.d')
+#def __init__(self, Gmu, CLTT_String_File, CLTE_String_File,CLBB_String_File,CLEE_String_File, TT,TE,BB, EE )
+fisher12= FisherCalculator(10**(-7),'cl_tt120.d','cl_te120.d','cl_bb120.d','cl_ee120.d',True, False, False, False)
 
 
 # In[5]:
