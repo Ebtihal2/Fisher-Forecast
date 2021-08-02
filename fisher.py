@@ -1,9 +1,3 @@
-
-# coding: utf-8
-
-# In[8]:
-
-
 #The libraries needed to run the code and camb. 
 from numpy.linalg.linalg import _fastCopyAndTranspose
 import math
@@ -30,8 +24,6 @@ class FisherCalculator:
         DLTE_String_File(file): TE string power spectrum with some nexp value.
         DLBB_String_File(file): BB string power spectrum with some nexp value.
         DLEE_String_File(file): EE string power spectrum with some nexp value.
-         
-        
         '''
         #String Data
         self.l, self.yt, self.zt, self.tt = np.loadtxt(DLTT_String_File, unpack = True)
@@ -62,18 +54,20 @@ class FisherCalculator:
             totCL=powers['total']
             self.ls = np.arange(totCL.shape[0])
             dl_t = totCL[:,0]
-            dl_e =totCL[:,1]
+            dl_e = totCL[:,1]
             dl_b = totCL[:,2]
             dl_te = totCL[:,3]
-      #Calculating A in terms of Gmu
+            
+            #Calculating A in terms of Gmu
             SigmaTot_tt2 = 0
             SigmaStr_tt2 = 0            
             for i in range(2,len(self.yt)):
                 SigmaTot_tt2 += ((2*i+1)/(4*np.pi))* ((dl_t[i] *(2*np.pi))/(i*(i+1)))
                 SigmaStr_tt2 += ((2*i+1)/(4*np.pi))* ( (self.yt[i]+ self.zt[i]+self.tt[i])*((2*np.pi))/(i*(i+1)))
             A = (self.Gmu)**2 * SigmaTot_tt2 *(1.27*10**(-6))**(-2) *(SigmaStr_tt2)**(-1)
-       #Calculating Cl_matrices for varied cosmological parameters and multipole values
-            for i in self.ls[ (self.ls < len(cl_t))& (self.ls <len(self.yt))& (self.ls > 1)]:
+            
+            #Calculating Cl_matrices for varied cosmological parameters and multipole values
+            for i in self.ls[ (self.ls < len(dl_t))& (self.ls <len(self.yt))& (self.ls > 1)]:
                 Cl_11 = A*(self.yt[i]+ self.zt[i]+self.tt[i])*(2*np.pi)/(i*(i+1)) + ((dl_t[i]*(2*np.pi))/(i*(i+1)))
                 Cl_12 = A*(self.yte[i]+ self.zte[i]+self.te[i])*(2*np.pi)/(i*(i+1))+((dl_te[i]*(2*np.pi))/(i*(i+1)))
                 Cl_22 = A*(self.ye[i]+ self.ze[i]+self.te[i])*(2*np.pi)/(i*(i+1)) + ((dl_e[i]*(2*np.pi))/(i*(i+1)))
@@ -83,7 +77,8 @@ class FisherCalculator:
             self.Parameters_CLmatrix[key_list[val_list.index(dictionary)]] = cl_matrix
             
     def Gmu_variation(self):
-        ''' The function calculates Cl Matrices for different multipole values and varied Gmu.
+        '''
+        The function calculates Cl Matrices for different multipole values and varied Gmu.
         
         Adds the resulting CL matrices to the dictionary of all cosmological parameters and their CL matrices.
         '''
@@ -105,7 +100,7 @@ class FisherCalculator:
             SigmaTot_tt2 += ((2*i+1)/(4*np.pi))* ((dl_t[i] *(2*np.pi))/(i*(i+1)))
             SigmaStr_tt2 += ((2*i+1)/(4*np.pi))* ( (self.yt[i]+ self.zt[i]+self.tt[i])*((2*np.pi))/(i*(i+1)))
         A = (self.Gmu*1.01)**2 * SigmaTot_tt2 *(1.27*10**(-6))**(-2) *(SigmaStr_tt2)**(-1)
-        for i in self.ls[ (self.ls < len(cl_t))& (self.ls <len(self.yt))& (self.ls > 1)]:
+        for i in self.ls[ (self.ls < len(dl_t))& (self.ls <len(self.yt))& (self.ls > 1)]:
             Cl_11 = A*(self.yt[i]+ self.zt[i]+self.tt[i])*(2*np.pi)/(i*(i+1)) + ((dl_t[i]*(2*np.pi))/(i*(i+1)))
             Cl_12 = A*(self.yte[i]+ self.zte[i]+self.te[i])*(2*np.pi)/(i*(i+1))+((dl_te[i]*(2*np.pi))/(i*(i+1)))
             Cl_22 = A*(self.ye[i]+ self.ze[i]+self.te[i])*(2*np.pi)/(i*(i+1)) + ((dl_e[i]*(2*np.pi))/(i*(i+1)))
@@ -117,23 +112,23 @@ class FisherCalculator:
 
         
     
-    def Fisher_matrix(self, noise_coefficient, noiseTT, noiseEE,noiseBB, fsky,fsky_coefficient):
+    def Fisher_matrix(self, noise_coefficient, noiseTT, noiseEE, noiseBB, fsky, fsky_coefficient):
         '''
-           The function addes noise to each CL_matrix for each variable. 
-           Calculates the fisher matrix and the uncertainties on each parameter. 
-           
-           Parameters: 
-           
-           noise_coefficient(int): the coefficient of the noise curves.
-           noiseTT(list): Noise curves for the TT power spectrum. 
-           noiseEE(list): Noise curves for the EE power spectrum. 
-           fsky(float): the fraction of the sky we are examining. 
-           fsky_coefficient(int): the coefficient of fsky.
-           
-           returns: 
-           dict: a dictionary that contains all the uncertainties on cosmological parameters. 
-           '''
-    #Using SPT 2020 data, noiseEEE = noiseBBB is a relatively good approximation. 
+        The function addes noise to each CL_matrix for each variable. 
+        Calculates the fisher matrix and the uncertainties on each parameter. 
+        
+        Parameters: 
+        
+        noise_coefficient(int): the coefficient of the noise curves.
+        noiseTT(list): Noise curves for the TT power spectrum. 
+        noiseEE(list): Noise curves for the EE power spectrum. 
+        fsky(float): the fraction of the sky we are examining. 
+        fsky_coefficient(int): the coefficient of fsky.
+        
+        returns: 
+        dict: a dictionary that contains all the uncertainties on cosmological parameters. 
+        '''
+        #Using SPT 2020 data, noiseEEE = noiseBBB is a relatively good approximation. 
         noiseTTT = noise_coefficient*noiseTT
         noiseEEE = noise_coefficient*noiseEE
         noiseBBB = noise_coefficient*noiseBB
