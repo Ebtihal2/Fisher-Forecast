@@ -59,76 +59,28 @@ class FisherCalculator:
             cl_e_fiducial =totCL[:,1]
             cl_b_fiducial = totCL[:,2]
             cl_te_fiducial = totCL[:,3]
+            cp = camb.set_params(**dictionary)
+            cp.set_for_lmax(10000, lens_potential_accuracy=0)
+            results = camb.get_results(cp)
+            powers = results.get_cmb_power_spectra(cp, CMB_unit='muK')
+            totCL=powers['total']
+            self.ls = np.arange(totCL.shape[0])
+            cl_t = totCL[:,0]
+            cl_e = totCL[:,1]
+            cl_b = totCL[:,2]
+            cl_te =totCL[:,3]
                 
             if TT ==True:
-                cp = camb.set_params(**dictionary)
-                cp.set_for_lmax(10000, lens_potential_accuracy=0)
-                results = camb.get_results(cp)
-                powers = results.get_cmb_power_spectra(cp, CMB_unit='muK')
-                totCL=powers['total']
-                self.ls = np.arange(totCL.shape[0])
                 cl_t = cl_t_fiducial
-                cl_e =totCL[:,1]
-                cl_b = totCL[:,2]
-                cl_te = totCL[:,3]
-                
             if TE ==True: 
-                cp = camb.set_params(**dictionary)
-                cp.set_for_lmax(10000, lens_potential_accuracy=0)
-                results = camb.get_results(cp)
-                powers = results.get_cmb_power_spectra(cp, CMB_unit='muK')
-                totCL=powers['total']
-                self.ls = np.arange(totCL.shape[0])
-                cl_t = totCL[:,0]
                 cl_te = cl_te_fiducial
-                cl_e =totCL[:,1]
-                cl_b = totCL[:,2]
             if EE == True:
-                cp = camb.set_params(**dictionary)
-                cp.set_for_lmax(10000, lens_potential_accuracy=0)
-                results = camb.get_results(cp)
-                powers = results.get_cmb_power_spectra(cp, CMB_unit='muK')
-                totCL=powers['total']
-                self.ls = np.arange(totCL.shape[0])
-                cl_t = totCL[:,0]
-                cl_b = totCL[:,2]
                 cl_e = cl_e_fiducial
-                cl_te =totCL[:,3]
             if BB == True:
-                
-                cp = camb.set_params(**dictionary)
-                cp.set_for_lmax(10000, lens_potential_accuracy=0)
-                results = camb.get_results(cp)
-                powers = results.get_cmb_power_spectra(cp, CMB_unit='muK')
-                totCL=powers['total']
-                self.ls = np.arange(totCL.shape[0])
-                cl_t = totCL[:,0]
-                cl_e = totCL[:,1]
                 cl_b = cl_b_fiducial
-                cl_te =totCL[:,3]
-            if (BB == True and TT == True): 
-                cp = camb.set_params(**dictionary)
-                cp.set_for_lmax(10000, lens_potential_accuracy=0)
-                results = camb.get_results(cp)
-                powers = results.get_cmb_power_spectra(cp, CMB_unit='muK')
-                totCL=powers['total']
-                self.ls = np.arange(totCL.shape[0])
-                cl_t = cl_t_fiducial
-                cl_e = totCL[:,1]
-                cl_b = cl_b_fiducial
-                cl_te =totCL[:,3]
+
                 
-            if (TT == False and TE == False and BB == False and EE== False):
-                cp = camb.set_params(**dictionary)
-                cp.set_for_lmax(10000, lens_potential_accuracy=0)
-                results = camb.get_results(cp)
-                powers = results.get_cmb_power_spectra(cp, CMB_unit='muK')
-                totCL=powers['total']
-                self.ls = np.arange(totCL.shape[0])
-                cl_t = totCL[:,0]
-                cl_e = totCL[:,1]
-                cl_b = totCL[:,2]
-                cl_te =totCL[:,3]
+            
       #Calculating A in terms of Gmu
             SigmaTot_tt2 = 0
             SigmaStr_tt2 = 0            
@@ -220,11 +172,9 @@ class FisherCalculator:
                         self.f_matrix1[row,column] += ((2*i+1)/2) * fsky1* np.trace(Clinv * self.dCldtheta_row * Clinv * self.dCldtheta_column)
         self.f_matrix1[5,5] +=   (1/(0.0070)**2)
         
-        print(self.f_matrix1)
         a = np.linalg.inv(self.f_matrix1)
         a.diagonal()
         self.errors = {}
         for i in range(len(a.diagonal())): 
             self.errors[variables[i]] = (a.diagonal()[i])**(1/2)
         return self.errors
-        
