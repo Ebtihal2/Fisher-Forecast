@@ -71,7 +71,7 @@ class FisherCalculator:
                 Cl_11 = self.A*(self.yt[i]+ self.zt[i]+self.tt[i])*(2*np.pi)/(i*(i+1)) + ((cl_t[i]*(2*np.pi))/(i*(i+1)))
                 Cl_12 = self.A*(self.yte[i]+ self.zte[i]+self.te[i])*(2*np.pi)/(i*(i+1))+((cl_te[i]*(2*np.pi))/(i*(i+1)))
                 Cl_22 = self.A*(self.ye[i]+ self.ze[i]+self.te[i])*(2*np.pi)/(i*(i+1)) + ((cl_e[i]*(2*np.pi))/(i*(i+1)))
-                Cl_33 = ((cl_b[i]*(2*np.pi))/(i*(i+1))) + 1.01*self.A*(self.yb[i]+ self.zb[i])*(2*np.pi)/(i*(i+1))
+                Cl_33 =self.A*(self.yb[i]+ self.zb[i])*(2*np.pi)/(i*(i+1)) +  ((cl_b[i]*(2*np.pi))/(i*(i+1))) 
                 c_l   = np.matrix([[Cl_11,  Cl_12, 0],[ Cl_12, Cl_22, 0], [0,0,Cl_33 ]])
                 cl_matrix.insert(len(cl_matrix)-1,c_l)
             self.Parameters_CLmatrix[key_list[val_list.index(dictionary)]] = cl_matrix
@@ -103,7 +103,7 @@ class FisherCalculator:
             Cl_11 = 1.01*self.A*(self.yt[i]+ self.zt[i]+self.tt[i])*(2*np.pi)/(i*(i+1)) + ((cl_t[i]*(2*np.pi))/(i*(i+1)))
             Cl_12 = 1.01*self.A*(self.yte[i]+ self.zte[i]+self.te[i])*(2*np.pi)/(i*(i+1))+((cl_te[i]*(2*np.pi))/(i*(i+1)))
             Cl_22 = 1.01*self.A*(self.ye[i]+ self.ze[i]+self.te[i])*(2*np.pi)/(i*(i+1)) + ((cl_e[i]*(2*np.pi))/(i*(i+1)))
-            Cl_33 = ((cl_b[i]*(2*np.pi))/(i*(i+1))) + 1.01*self.A*(self.yb[i]+ self.zb[i])*(2*np.pi)/(i*(i+1))
+            Cl_33 = 1.01*self.A*(self.yb[i]+ self.zb[i])*(2*np.pi)/(i*(i+1)) + ((cl_b[i]*(2*np.pi))/(i*(i+1))) 
             c_l   = np.matrix([[Cl_11,  Cl_12, 0],[ Cl_12, Cl_22, 0], [0,0,Cl_33 ]])
             cl_matrix.insert(len(cl_matrix)-1,c_l)
         self.Parameters_CLmatrix["A_value"] = cl_matrix
